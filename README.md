@@ -1,71 +1,61 @@
-﻿# Telegram English Tutor Mini App + Bot
+﻿# Telegram English Tutor Mini App (Vercel)
 
-Проект: красивый Telegram Mini App + бот-помощник для изучения английского.
+Проект полностью адаптирован под Vercel:
+- Mini App фронтенд: `web/`
+- Telegram webhook: `/api/telegram_webhook`
+- Ежедневный check-in через Vercel Cron: `/api/cron_daily`
+- Endpoint для установки webhook: `/api/set_webhook`
 
-Функции:
-- Переводчик RU <-> EN
-- Пояснение исключений/особенностей (например `man -> men`)
-- Сохранение слов в Supabase
-- Ежедневный check-in вопрос на английском
-- Диалог с исправлением ошибок и объяснением правил
-- Бот старается использовать слова из вашей базы в общении
+## Что уже умеет
+- Перевод RU/EN + пояснение исключений
+- Сохранение слова в Supabase
+- Диалог с исправлением ошибок и коротким объяснением правила
+- Ежедневное сообщение на английском с использованием слов из вашей БД
 
-## Структура
+## Файлы
+- `api/telegram_webhook.py` - обработка апдейтов Telegram
+- `api/cron_daily.py` - ежедневные сообщения
+- `api/set_webhook.py` - установка webhook в Telegram
+- `src/webhook_logic.py` - общая логика бота
+- `sql/schema.sql` - таблицы Supabase
+- `web/` - интерфейс Mini App
+- `vercel.json` - расписание Cron
 
-- `src/bot.py` - Telegram бот (aiogram)
-- `src/translator.py` - перевод и объяснения через OpenAI
-- `src/dialogue.py` - режим общения и исправления
-- `src/supabase_client.py` - запись/чтение слов из Supabase
-- `src/scheduler.py` - ежедневные сообщения
-- `sql/schema.sql` - SQL схема Supabase
-- `web/` - фронтенд Telegram Mini App
-
-## 1) Установка
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-## 2) Настройка переменных
-
-Скопируйте `.env.example` в `.env` и заполните:
+## Переменные окружения в Vercel
+Добавьте в Vercel Project Settings -> Environment Variables:
 
 - `TELEGRAM_BOT_TOKEN`
 - `OPENAI_API_KEY`
-- `OPENAI_MODEL`
+- `OPENAI_MODEL` (например `gpt-4.1-mini`)
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
-- `DAILY_CHECKIN_HOUR`
-- `TIMEZONE`
-- `WEBAPP_URL` (URL на ваш `web/index.html` по HTTPS)
+- `WEBAPP_URL` (например `https://your-project.vercel.app/web/index.html`)
+- `PUBLIC_BASE_URL` (например `https://your-project.vercel.app`)
+- `TELEGRAM_WEBHOOK_SECRET` (любая случайная строка)
+- `SETUP_SECRET` (любая случайная строка)
+- `CRON_SECRET` (любая случайная строка)
 
-## 3) Настройка Supabase
+## Настройка BotFather
+1. `/setdomain` -> укажите `https://your-project.vercel.app`
+2. `/setmenubutton` (опционально) -> Mini App URL `https://your-project.vercel.app/web/index.html`
 
-Выполните SQL из `sql/schema.sql` в SQL Editor вашего Supabase.
+## Установка webhook
+После деплоя откройте:
 
-## 4) Публикация Mini App фронтенда
+`https://your-project.vercel.app/api/set_webhook?setup_secret=YOUR_SETUP_SECRET`
 
-Папку `web/` нужно выложить на HTTPS-хостинг (например Netlify/Vercel/GitHub Pages через кастомный HTTPS URL).
+Это привяжет Telegram к:
 
-Требуется, чтобы `WEBAPP_URL` указывал на `index.html`.
+`https://your-project.vercel.app/api/telegram_webhook`
 
-## 5) Запуск бота
+## Supabase
+Выполните SQL из `sql/schema.sql` (если еще не выполнено).
 
-```bash
-python -m src.bot
-```
+## Проверка
+1. Откройте бота и отправьте `/start`
+2. Нажмите `Open Mini App`
+3. Проверьте перевод и сохранение слова
+4. Проверьте чат-команду `/chat ...`
 
-## Использование
-
-- `/start` - регистрация и кнопка открытия Mini App
-- `/app` - открыть Mini App кнопкой
-- `/translate word` - перевод + кнопка сохранения
-- `/chat I goed to school` - диалог с исправлениями
-- Любое обычное сообщение тоже работает как тренировка
-
-## Важно
-
-- Бот должен работать постоянно для ежедневных сообщений.
-- История чатов не сохраняется, сохраняются слова.
+## Cron
+`vercel.json` уже содержит ежедневный запуск `/api/cron_daily` в `17:00 UTC` (это `20:00` по Москве).
