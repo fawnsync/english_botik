@@ -16,8 +16,18 @@ class TranslationResult:
 
 
 class TranslatorService:
-    def __init__(self, api_key: str, model: str) -> None:
-        self.client = OpenAI(api_key=api_key)
+    def __init__(
+        self,
+        api_key: str,
+        model: str,
+        base_url: str = "",
+        default_headers: dict[str, str] | None = None,
+    ) -> None:
+        self.client = OpenAI(
+            api_key=api_key,
+            base_url=base_url or None,
+            default_headers=default_headers or None,
+        )
         self.model = model
 
     def translate_word(self, text: str) -> TranslationResult:
@@ -30,21 +40,20 @@ class TranslatorService:
             "Explanation must be concise and useful for learners."
         )
 
-        response = self.client.responses.create(
+        response = self.client.chat.completions.create(
             model=self.model,
-            input=[
+            messages=[
                 {"role": "system", "content": prompt},
                 {"role": "user", "content": text.strip()},
             ],
             temperature=0.2,
         )
 
-        raw_text = response.output_text.strip()
+        raw_text = (response.choices[0].message.content or "").strip()
 
         try:
             payload = json.loads(raw_text)
         except json.JSONDecodeError:
-            # Defensive fallback if the model returns wrappers around JSON.
             start = raw_text.find("{")
             end = raw_text.rfind("}")
             if start == -1 or end == -1:

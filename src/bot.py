@@ -60,8 +60,8 @@ async def main() -> None:
     bot = Bot(token=settings.telegram_bot_token)
     dp = Dispatcher()
 
-    translator = TranslatorService(settings.openai_api_key, settings.openai_model)
-    dialogue = DialogueService(settings.openai_api_key, settings.openai_model)
+    translator = TranslatorService(settings.openai_api_key, settings.openai_model, settings.openai_base_url, settings.llm_headers())
+    dialogue = DialogueService(settings.openai_api_key, settings.openai_model, settings.openai_base_url, settings.llm_headers())
     supabase = SupabaseService(settings.supabase_url, settings.supabase_key)
 
     scheduler = DailyCheckinScheduler(

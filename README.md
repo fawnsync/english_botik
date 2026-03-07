@@ -25,28 +25,31 @@
 Добавьте в Vercel Project Settings -> Environment Variables:
 
 - `TELEGRAM_BOT_TOKEN`
-- `OPENAI_API_KEY`
-- `OPENAI_MODEL` (например `gpt-4.1-mini`)
+- `OPENAI_API_KEY` (или ваш ключ OpenRouter `sk-or-...`)
+- `OPENAI_MODEL` (пример: `qwen/qwen3-coder:free`)
+- `OPENAI_BASE_URL` (для OpenRouter: `https://openrouter.ai/api/v1`)
+- `OPENROUTER_HTTP_REFERER` (пример: `https://english-botik.vercel.app`)
+- `OPENROUTER_APP_TITLE` (пример: `english-botik`)
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
-- `WEBAPP_URL` (например `https://your-project.vercel.app/web/index.html`)
-- `PUBLIC_BASE_URL` (например `https://your-project.vercel.app`)
-- `TELEGRAM_WEBHOOK_SECRET` (любая случайная строка)
-- `SETUP_SECRET` (любая случайная строка)
-- `CRON_SECRET` (любая случайная строка)
+- `WEBAPP_URL` (пример: `https://english-botik.vercel.app/web/index.html`)
+- `PUBLIC_BASE_URL` (пример: `https://english-botik.vercel.app`)
+- `TELEGRAM_WEBHOOK_SECRET`
+- `SETUP_SECRET`
+- `CRON_SECRET`
 
 ## Настройка BotFather
-1. `/setdomain` -> укажите `https://your-project.vercel.app`
-2. `/setmenubutton` (опционально) -> Mini App URL `https://your-project.vercel.app/web/index.html`
+1. `/setdomain` -> укажите `https://english-botik.vercel.app`
+2. `/setmenubutton` (опционально) -> Mini App URL `https://english-botik.vercel.app/web/index.html`
 
 ## Установка webhook
 После деплоя откройте:
 
-`https://your-project.vercel.app/api/set_webhook?setup_secret=YOUR_SETUP_SECRET`
+`https://english-botik.vercel.app/api/set_webhook?setup_secret=YOUR_SETUP_SECRET`
 
 Это привяжет Telegram к:
 
-`https://your-project.vercel.app/api/telegram_webhook`
+`https://english-botik.vercel.app/api/telegram_webhook`
 
 ## Supabase
 Выполните SQL из `sql/schema.sql` (если еще не выполнено).

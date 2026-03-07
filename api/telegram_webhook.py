@@ -20,8 +20,8 @@ def _build_services() -> Services:
     settings = get_settings()
     return Services(
         telegram=TelegramAPI(settings.telegram_bot_token),
-        translator=TranslatorService(settings.openai_api_key, settings.openai_model),
-        dialogue=DialogueService(settings.openai_api_key, settings.openai_model),
+        translator=TranslatorService(settings.openai_api_key, settings.openai_model, settings.openai_base_url, settings.llm_headers()),
+        dialogue=DialogueService(settings.openai_api_key, settings.openai_model, settings.openai_base_url, settings.llm_headers()),
         supabase=SupabaseService(settings.supabase_url, settings.supabase_key),
         webapp_url=settings.webapp_url,
     )
