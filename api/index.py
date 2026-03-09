@@ -38,11 +38,13 @@ def _build_services() -> Services:
 
 
 @app.get("/")
+@app.get("/api")
 def health() -> dict:
     return {"ok": True, "service": "english-botik-api"}
 
 
 @app.post("/telegram_webhook")
+@app.post("/api/telegram_webhook")
 async def telegram_webhook(
     request: Request,
     x_telegram_bot_api_secret_token: str | None = Header(default=None),
@@ -57,6 +59,7 @@ async def telegram_webhook(
 
 
 @app.get("/cron_daily")
+@app.get("/api/cron_daily")
 def cron_daily(authorization: str | None = Header(default=None)) -> JSONResponse:
     cron_secret = os.getenv("CRON_SECRET", "").strip()
     if cron_secret:
@@ -69,6 +72,7 @@ def cron_daily(authorization: str | None = Header(default=None)) -> JSONResponse
 
 
 @app.get("/set_webhook")
+@app.get("/api/set_webhook")
 def set_webhook(setup_secret: str) -> JSONResponse:
     expected_setup_secret = os.getenv("SETUP_SECRET", "").strip()
     if expected_setup_secret and setup_secret != expected_setup_secret:

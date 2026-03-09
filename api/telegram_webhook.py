@@ -20,19 +20,31 @@ def _build_services() -> Services:
     settings = get_settings()
     return Services(
         telegram=TelegramAPI(settings.telegram_bot_token),
-        translator=TranslatorService(settings.openai_api_key, settings.openai_model, settings.openai_base_url, settings.llm_headers()),
-        dialogue=DialogueService(settings.openai_api_key, settings.openai_model, settings.openai_base_url, settings.llm_headers()),
+        translator=TranslatorService(
+            settings.openai_api_key,
+            settings.openai_model,
+            settings.openai_base_url,
+            settings.llm_headers(),
+        ),
+        dialogue=DialogueService(
+            settings.openai_api_key,
+            settings.openai_model,
+            settings.openai_base_url,
+            settings.llm_headers(),
+        ),
         supabase=SupabaseService(settings.supabase_url, settings.supabase_key),
         webapp_url=settings.webapp_url,
     )
 
 
 @app.get("/")
+@app.get("/api/telegram_webhook")
 def health() -> dict:
     return {"ok": True}
 
 
 @app.post("/")
+@app.post("/api/telegram_webhook")
 async def telegram_webhook(
     request: Request,
     x_telegram_bot_api_secret_token: str | None = Header(default=None),

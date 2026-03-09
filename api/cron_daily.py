@@ -20,14 +20,25 @@ def _build_services() -> Services:
     settings = get_settings()
     return Services(
         telegram=TelegramAPI(settings.telegram_bot_token),
-        translator=TranslatorService(settings.openai_api_key, settings.openai_model, settings.openai_base_url, settings.llm_headers()),
-        dialogue=DialogueService(settings.openai_api_key, settings.openai_model, settings.openai_base_url, settings.llm_headers()),
+        translator=TranslatorService(
+            settings.openai_api_key,
+            settings.openai_model,
+            settings.openai_base_url,
+            settings.llm_headers(),
+        ),
+        dialogue=DialogueService(
+            settings.openai_api_key,
+            settings.openai_model,
+            settings.openai_base_url,
+            settings.llm_headers(),
+        ),
         supabase=SupabaseService(settings.supabase_url, settings.supabase_key),
         webapp_url=settings.webapp_url,
     )
 
 
 @app.get("/")
+@app.get("/api/cron_daily")
 def cron_daily(authorization: str | None = Header(default=None)) -> JSONResponse:
     cron_secret = os.getenv("CRON_SECRET", "").strip()
     if cron_secret:

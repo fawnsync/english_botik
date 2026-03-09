@@ -13,6 +13,7 @@ app = FastAPI()
 
 
 @app.get("/")
+@app.get("/api/set_webhook")
 def set_webhook(setup_secret: str) -> JSONResponse:
     expected_setup_secret = os.getenv("SETUP_SECRET", "").strip()
     if expected_setup_secret and setup_secret != expected_setup_secret:
